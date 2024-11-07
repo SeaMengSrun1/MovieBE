@@ -2,12 +2,10 @@ package com.example.movie.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
-@Table
+@Table(name = "movie")
 @Data
 public class Movie {
 
@@ -16,15 +14,11 @@ public class Movie {
     private Long id;
     private String title;
     private String description;
-    private LocalDate releaseDate;
+    private String releaseDate;
     private String posterUrl;
-    @ManyToMany
-    @JoinTable(
-            name = "movieType",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "movieType_id")
-    )
-    private List<MovieType> movieTypes;
+    private String rating;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_type_id")
+    private MovieType movieType;
 }
-
-
