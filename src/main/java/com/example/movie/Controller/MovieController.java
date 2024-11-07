@@ -4,6 +4,7 @@ import com.example.movie.Model.Movie;
 import com.example.movie.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.example.movie.DTO.ResponseDTO;
 
 import java.util.List;
 
@@ -18,23 +19,25 @@ public class MovieController {
         this.movieService = movieService;
     }
 
+
     @GetMapping()
-    public List<Movie> getAllMovies(){
-        return movieService.getMovies();
+    public ResponseDTO<List<Movie>> getAllMovies() {
+        List<Movie> movies = movieService.getMovies();
+        return new ResponseDTO<>("success", "Movies retrieved successfully", movies);
     }
 
     @GetMapping(path = "/{id}")
-    public Movie getMovieById(@PathVariable("id") Long id){
+    public Movie getMovieById(@PathVariable("id") Long id) {
         return movieService.getMovieById(id);
     }
 
     @PostMapping
-    public void createMovie(@RequestBody Movie movie){
+    public void createMovie(@RequestBody Movie movie) {
         movieService.createMovie(movie);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteMovie(@PathVariable("id") Long id){
+    public void deleteMovie(@PathVariable("id") Long id) {
         movieService.deleteMovie(id);
     }
 

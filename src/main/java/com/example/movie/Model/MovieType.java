@@ -15,6 +15,4 @@ public class MovieType {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "movieType")
-    private List<Movie> movies;
 }
