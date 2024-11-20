@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.movie.DTO.ResponseDTO;
 
+
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/movie")
+@RequestMapping(path = "/movie")
 public class MovieController {
 
     private final MovieService movieService;
@@ -20,10 +21,9 @@ public class MovieController {
     }
 
 
-    @GetMapping()
-    public ResponseDTO<List<Movie>> getAllMovies() {
-        List<Movie> movies = movieService.getMovies();
-        return new ResponseDTO<>("success", "Movies retrieved successfully", movies);
+    @GetMapping
+    public ResponseDTO<List<Movie>> getMovies() {
+        return new ResponseDTO<>("200", "Success", movieService.getMovies());
     }
 
     @GetMapping(path = "/{id}")

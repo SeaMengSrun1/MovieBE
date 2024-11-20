@@ -2,6 +2,7 @@ package com.example.movie.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Entity
@@ -15,10 +16,11 @@ public class Movie {
     private String title;
     private String description;
     private String releaseDate;
+    @Column(length = 1000)
     private String posterUrl;
     private String rating;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_type_id")
-    private MovieType movieType;
+//    @ManyToOne
+//    @JoinColumn(name = "movie_type_id")
+//    private MovieType movieType;
 }
