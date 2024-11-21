@@ -20,7 +20,7 @@ public class Movie {
     private String posterUrl;
     private String rating;
 
-//    @ManyToOne
-//    @JoinColumn(name = "movie_type_id")
-//    private MovieType movieType;
+    @ManyToOne
+    @JoinColumn(name = "movie_type_id")
+    private MovieType movieType;
 }

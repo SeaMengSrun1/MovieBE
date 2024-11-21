@@ -19,5 +19,4 @@ public class ResponseDTO<T> {
         this.data = data;
     }
 
-
 }

@@ -1,12 +1,15 @@
 package com.example.movie.Service;
 
 import com.example.movie.Model.Movie;
+import com.example.movie.ModelDTO.MovieDTO;
 import com.example.movie.Repository.MovieRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -42,6 +45,15 @@ public class MovieService {
             throw new IllegalStateException("Movie with id " + id + " does not exist");
         }
         movieRepository.deleteById(id);
+    }
+
+    public Map<String, List<Movie>> getMoviesByGroup(){
+        List<Movie> movies = movieRepository.findAll();
+        return movies.stream().collect(Collectors.groupingBy(movie -> movie.getMovieType().getName()));
+    }
+
+    public List<MovieDTO> getAllMoviesWithMovieType(){
+        return movieRepository.findAllMoviesWithMovieType();
     }
 
 }
