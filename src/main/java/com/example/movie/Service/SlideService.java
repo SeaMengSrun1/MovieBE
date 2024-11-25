@@ -23,4 +23,27 @@ public class SlideService {
         return slideRepo.findById(id).orElseThrow(() -> new IllegalStateException("Slide with id " + id + " not found"));
     }
 
+    public void createSlide(Slide slide) {
+        slideRepo.save(slide);
+    }
+
+    public void deleteSlide(Long id) {
+        boolean exists = slideRepo.existsById(id);
+        if (!exists) {
+            throw new IllegalStateException("Slide with id " + id + " does not exist");
+        }
+        slideRepo.deleteById(id);
+    }
+
+    public void updateSlide(Long id, Slide slide) {
+        Slide slideToUpdate = slideRepo.findById(id).orElseThrow(() -> new IllegalStateException("Slide with id " + id + " not found"));
+        slideToUpdate.setSlideTitle(slide.getSlideTitle());
+        slideToUpdate.setSlideUrl(slide.getSlideUrl());
+        slideRepo.save(slideToUpdate);
+    }
+
+    public void createSlides(List<Slide> slides) {
+        slideRepo.saveAll(slides);
+    }
+
 }

@@ -30,8 +30,8 @@ public class MovieController {
     }
 
     @GetMapping(path = "/{id}")
-    public Movie getMovieById(@PathVariable("id") Long id) {
-        return movieService.getMovieById(id);
+    public ResponseDTO<Movie> getMovieById(@PathVariable Long id) {
+        return new ResponseDTO<>("200", "Success", movieService.getMovieById(id));
     }
 
     @GetMapping(path = "/group")

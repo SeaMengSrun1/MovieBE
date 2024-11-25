@@ -3,24 +3,28 @@ package com.example.movie.Model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Data
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
-    private String password;
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
-    private String role;
-    private String status;
-    private String created_at;
+    @Column(nullable = false, length = 100)
+    private String password;
 
-//   @OneToMany
-//    @JoinColumn(name = "user_id")
-//    private List<Review> reviews;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+
+
+    public enum Role {
+        ADMIN, USER
+    }
 
 }
