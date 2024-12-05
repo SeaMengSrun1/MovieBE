@@ -15,13 +15,14 @@ public class UserService {
     public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
+
     public List<User> getUsers() {
         return userRepo.findAll();
     }
 
     public User getUserById(Long id) {
         return userRepo.findById(id).
-                orElseThrow(()-> new IllegalArgumentException("User with id " + id + " not found"));
+                orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
     }
 
     public User getUserByUsername(String username) {
@@ -38,9 +39,9 @@ public class UserService {
         }
     }
 
-    public void deleteUser(Long id){
+    public void deleteUser(Long id) {
         boolean exists = userRepo.existsById(id);
-        if(!exists){
+        if (!exists) {
             throw new IllegalStateException("User with id " + id + " does not exist");
         }
         userRepo.deleteById(id);
@@ -48,7 +49,7 @@ public class UserService {
 
     public void updateUser(Long id, User user) {
         User userToUpdate = userRepo.findById(id).
-                orElseThrow(()-> new IllegalArgumentException("User with id " + id + " not found"));
+                orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setEmail(user.getEmail());
         userToUpdate.setPassword(user.getPassword());
@@ -57,7 +58,7 @@ public class UserService {
 
     public void changePassword(Long id, String password) {
         User userToUpdate = userRepo.findById(id).
-                orElseThrow(()-> new IllegalArgumentException("User with id " + id + " not found"));
+                orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
         userToUpdate.setPassword(password);
         userRepo.save(userToUpdate);
     }

@@ -20,8 +20,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-
+    private String profileUrl;
 
     public enum Role {
         ADMIN, USER
