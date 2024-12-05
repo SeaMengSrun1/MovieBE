@@ -35,10 +35,14 @@ public class MovieController {
     }
 
     @GetMapping(path = "/group")
-    public ResponseEntity<Map<String, List<Movie>>> getMoviesByGroup() {
-        Map<String, List<Movie>> groupedMovies = movieService.getMoviesByGroup();
-        return ResponseEntity.ok(groupedMovies);
+    public ResponseDTO<Map<String, List<Movie>>> getMoviesByGroup() {
+        return new ResponseDTO<>("200", "Success", movieService.getMoviesByGroup());
     }
+//    public ResponseEntity<Map<String, List<Movie>>> getMoviesByGroup() {
+//        Map<String, List<Movie>> groupedMovies = movieService.getMoviesByGroup();
+//        return ResponseEntity.ok(groupedMovies);
+//    }
+
     @GetMapping(path = "/movieType")
     public ResponseEntity<List<MovieDTO>> getAllMovies() {
         return ResponseEntity.ok(movieService.getAllMoviesWithMovieType());
