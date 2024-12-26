@@ -67,5 +67,10 @@ public class MovieService {
         Collections.shuffle(movies);
         return movies.stream().limit(3).collect(Collectors.toList());
     }
+// src/main/java/com/example/movie/Service/MovieService.java
+public List<Movie> getMoviesByType(String type) {
+    return movieRepository.findByMovieTypeName(type);
+}
+
 
 }

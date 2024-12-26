@@ -34,11 +34,16 @@ public class MovieController {
         return new ResponseDTO<>("200", "Success", movieService.getLatestMovies());
     }
 
-// src/main/java/com/example/movie/Controller/MovieController.java
-@GetMapping(path = "/random")
-public ResponseDTO<List<Movie>> getRandomMovies() {
-    return new ResponseDTO<>("200", "Success", movieService.getRandomMovies());
-}
+    // src/main/java/com/example/movie/Controller/MovieController.java
+    @GetMapping(path = "/random")
+    public ResponseDTO<List<Movie>> getRandomMovies() {
+        return new ResponseDTO<>("200", "Success", movieService.getRandomMovies());
+    }
+    @GetMapping(path = "/type/{type}")
+    public ResponseDTO<List<Movie>> getMoviesByType(@PathVariable String type) {
+        return new ResponseDTO<>("200", "Success", movieService.getMoviesByType(type));
+    }
+
 
     @GetMapping(path = "/{id}")
     public ResponseDTO<Movie> getMovieById(@PathVariable Long id) {
@@ -47,7 +52,7 @@ public ResponseDTO<List<Movie>> getRandomMovies() {
 
     @GetMapping(path = "/group")
     public ResponseDTO<Map<String, List<Movie>>> getMoviesByGroup() {
-        return new ResponseDTO<>("200", "Success", movieService.getMoviesByGroup());
+        return new ResponseDTO<>("200", "Success fully for getting data.", movieService.getMoviesByGroup());
     }
 //    public ResponseEntity<Map<String, List<Movie>>> getMoviesByGroup() {
 //        Map<String, List<Movie>> groupedMovies = movieService.getMoviesByGroup();

@@ -22,4 +22,6 @@ public interface MovieRepo extends JpaRepository<Movie, Long> {
 //    find movie by reverse order
     @Query("SELECT m FROM Movie m ORDER BY m.id DESC")
     List<Movie> findMovieByReverseOrder();
+
+    List<Movie> findByMovieTypeName(String type);
 }
