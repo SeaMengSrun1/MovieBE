@@ -22,6 +22,8 @@ public class User {
     private Role role;
     private String profileUrl;
 
+
+
     public enum Role {
         ADMIN, USER
     }

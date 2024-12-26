@@ -29,6 +29,17 @@ public class MovieController {
         return new ResponseDTO<>("200", "Success", movieService.getAllMoviesWithMovieType());
     }
 
+    @GetMapping(path = "/latest")
+    public ResponseDTO<List<Movie>> getLatestMovies() {
+        return new ResponseDTO<>("200", "Success", movieService.getLatestMovies());
+    }
+
+// src/main/java/com/example/movie/Controller/MovieController.java
+@GetMapping(path = "/random")
+public ResponseDTO<List<Movie>> getRandomMovies() {
+    return new ResponseDTO<>("200", "Success", movieService.getRandomMovies());
+}
+
     @GetMapping(path = "/{id}")
     public ResponseDTO<Movie> getMovieById(@PathVariable Long id) {
         return new ResponseDTO<>("200", "Success", movieService.getMovieById(id));
@@ -57,6 +68,5 @@ public class MovieController {
     public void deleteMovie(@PathVariable("id") Long id) {
         movieService.deleteMovie(id);
     }
-
 
 }

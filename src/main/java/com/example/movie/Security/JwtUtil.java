@@ -37,17 +37,22 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public ResponseDTO<Map<String, String>> generateToken(String username) {
-        String token = createToken(username);
+    public Map<String, String> generateToken(String username, String role) {
+        String token = createToken(username, role);
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
-        return ResponseDTO.success(tokenMap, "Token generated successfully");
+        tokenMap.put("role", role);
+        return tokenMap;
     }
 
-    private String createToken(String subject) {
-        return Jwts.builder().setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+    private String createToken(String subject, String role) {
+        return Jwts.builder()
+                .setSubject(subject)
+                .claim("role", role)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
     public Boolean validateToken(String token, String username) {

@@ -2,12 +2,14 @@ package com.example.movie.Controller;
 
 import com.example.movie.DTO.ResponseDTO;
 import com.example.movie.Model.User;
-import com.example.movie.ModelDTO.MovieDTO;
 import com.example.movie.Repository.UserRepo;
+import com.example.movie.Request.AuthRequest;
 import com.example.movie.Security.JwtUtil;
-import com.example.movie.Service.CustomUserDetailsService;
 import com.example.movie.Service.UserService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -39,88 +42,86 @@ public class AuthController {
     private UserService getUserService;
 
 
+    @PostMapping("auth/signup")
+    public ResponseDTO<Map<String, String>> signUp(@RequestBody AuthRequest authRequest) {
+        try {
+            User user = getUserService.signUp(authRequest);
+            if (user != null) {
+                final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+                User registeredUser = userRepository.findByEmail(authRequest.getEmail());
+                Map<String, String> tokenMap = jwtUtil.generateToken(userDetails.getUsername(), registeredUser.getRole().toString());
+                return new ResponseDTO<>("200", "Success", tokenMap);
+            } else {
+                return new ResponseDTO<>("400", "Failure", null);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseDTO<>("400", "Failure", null);
+        } catch (Exception e) {
+            return new ResponseDTO<>("400", "Failure", null);
+        }
+    }
 
-
-    @PostMapping("/authenticate")
-    public ResponseDTO<Map<String, String>> createAuthenticationToken(@RequestBody AuthRequest authRequest) throws Exception {
+    @PostMapping("auth/login")
+    public ResponseDTO<Map<String, String>> login(@RequestBody User authRequest) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getEmail(),
+                            authRequest.getPassword()
+                    )
             );
         } catch (Exception e) {
+            System.out.println("Authentication failed: " + e.getMessage());
             throw new Exception("Incorrect username or password", e);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        return jwtUtil.generateToken(userDetails.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+        User user = userRepository.findByEmail(authRequest.getEmail());
+        Map<String, String> tokenMap = jwtUtil.generateToken(userDetails.getUsername(), user.getRole().toString());
+        return new ResponseDTO<>("200", "Success", tokenMap);
     }
 
-    @PostMapping("/signup")
-    public String signUp(@RequestBody AuthRequest authRequest) {
-        User user = new User();
-        user.setUsername(authRequest.getUsername());
-        user.setEmail(authRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
-        user.setRole(User.Role.USER); // Default role
-        userRepository.save(user);
-        if (userRepository.findByUsername(authRequest.getUsername()) != null) {
-            return "User created successfully";
-        } else {
-            return "User creation failed";
-        }
-    }
-    private void orElseThrow(Object userCreationFailed) {
-    }
-
-    @PostMapping("/login")
-    public ResponseDTO<Map<String, String>> login(@RequestBody AuthRequest authRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-        } catch (Exception e) {
-            System.out.println("Authentication failed: " + e.getMessage());  // Log the error
-            throw new Exception("Incorrect username or password", e);
-        }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        return jwtUtil.generateToken(userDetails.getUsername());
+    // @PostMapping("auth/login")
+//    public ResponseDTO<Map<String, String>> login(@RequestBody User authRequest) throws Exception {
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            authRequest.getEmail(),
+//                            authRequest.getPassword()
+//                    )
+//            );
+//        } catch (Exception e) {
+//            System.out.println("Authentication failed: " + e.getMessage());
+//            throw new Exception("Incorrect username or password", e);
+//        }
+//        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+//        return jwtUtil.generateToken(userDetails.getUsername());
+//    }
+    @PostMapping("auth/logout")
+    public ResponseDTO<String> logout(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT");
+        return new ResponseDTO<>("Success", "Logged out successfully", "200");
     }
 
-    @GetMapping("/users")
-    public ResponseDTO<List<User>> getUser() {
-        return new ResponseDTO<>("200", "Success", getUserService.getUsers());
+    @GetMapping("/profile")
+    public ResponseDTO<User> getProfile(@RequestHeader("Authorization") String token) {
+        String username = jwtUtil.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username);
+        return new ResponseDTO<>("200", "Success", user);
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseDTO<User> getUserById(@PathVariable Long id) {
-        return new ResponseDTO<>("200", "Success", getUserService.getUserById(id));
-    }
+    public Map<String, String> generateToken(String username, String role) {
+        String token = Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours expiration
+                .signWith(SignatureAlgorithm.HS256, "secret_key") // Use a secure key
+                .compact();
 
-    @GetMapping("/users/username/{username}")
-    public ResponseDTO<User> getUserByUsername(@PathVariable String username) {
-        return new ResponseDTO<>("200", "Success", getUserService.getUserByUsername(username));
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        tokenMap.put("role", role);
+        return tokenMap;
     }
-
-    @GetMapping("/users/email/{email}")
-    public ResponseDTO<User> getUserByEmail(@PathVariable String email) {
-        return new ResponseDTO<>("200", "Success", getUserService.getUserByEmail(email));
-    }
-
-    @DeleteMapping("/users/{id}")
-    public ResponseDTO<String> deleteUser(@PathVariable Long id) {
-        getUserService.deleteUser(id);
-        return new ResponseDTO<>("200", "User deleted successfully", null);
-    }
-
-    @PutMapping("/users/{id}")
-    public ResponseDTO<String> updateUser(@PathVariable Long id, @RequestBody User user) {
-        getUserService.updateUser(id, user);
-        return new ResponseDTO<>("200", "User updated successfully", null);
-    }
-
-    @PutMapping("/users/{id}/changePassword")
-    public ResponseDTO<String> changePassword(@PathVariable Long id, @RequestBody String password) {
-        getUserService.changePassword(id, password);
-        return new ResponseDTO<>("200", "Password changed successfully", null);
-    }
-
 }

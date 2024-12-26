@@ -1,4 +1,4 @@
-package com.example.movie.Controller;
+package com.example.movie.Request;
 
 import lombok.Data;
 

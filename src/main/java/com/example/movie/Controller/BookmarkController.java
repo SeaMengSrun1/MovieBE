@@ -2,7 +2,6 @@ package com.example.movie.Controller;
 
 import com.example.movie.DTO.ResponseDTO;
 import com.example.movie.Model.Bookmark;
-import com.example.movie.Repository.BookmarkRepo;
 import com.example.movie.Service.BookmarkService;
 import org.springframework.web.bind.annotation.*;
 

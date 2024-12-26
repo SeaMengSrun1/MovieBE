@@ -6,6 +6,7 @@ import com.example.movie.Repository.MovieRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,32 +29,43 @@ public class MovieService {
 
     public Movie getMovieById(Long id) {
         return movieRepository.findById(id).
-                orElseThrow(()-> new IllegalArgumentException("Movie with id " + id + " not found"));
+                orElseThrow(() -> new IllegalArgumentException("Movie with id " + id + " not found"));
     }
 
     public void createMovie(Movie movie) {
         Optional<Movie> movieOptional = movieRepository.findMovieByTitle(movie.getTitle());
-        if(movieOptional.isPresent()){
+        if (movieOptional.isPresent()) {
             throw new IllegalStateException("Movie with title " + movie.getTitle() + " already exists");
         }
         movieRepository.save(movie);
     }
 
-    public void deleteMovie(Long id){
+    public void deleteMovie(Long id) {
         boolean exists = movieRepository.existsById(id);
-        if(!exists){
+        if (!exists) {
             throw new IllegalStateException("Movie with id " + id + " does not exist");
         }
         movieRepository.deleteById(id);
     }
 
-    public Map<String, List<Movie>> getMoviesByGroup(){
+    public Map<String, List<Movie>> getMoviesByGroup() {
         List<Movie> movies = movieRepository.findAll();
         return movies.stream().collect(Collectors.groupingBy(movie -> movie.getMovieType().getName()));
     }
 
-    public List<MovieDTO> getAllMoviesWithMovieType(){
+    public List<MovieDTO> getAllMoviesWithMovieType() {
         return movieRepository.findAllMoviesWithMovieType();
+    }
+
+    //    show latest movies
+    public List<Movie> getLatestMovies() {
+        return movieRepository.findMovieByReverseOrder();
+    }
+
+    public List<Movie> getRandomMovies() {
+        List<Movie> movies = movieRepository.findAll();
+        Collections.shuffle(movies);
+        return movies.stream().limit(3).collect(Collectors.toList());
     }
 
 }
