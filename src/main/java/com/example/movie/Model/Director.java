@@ -1,10 +1,10 @@
 package com.example.movie.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.movie.Model.JunctionTable.Director_Movie;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -17,4 +17,7 @@ public class Director {
     private String birthDate;
     private String ProfileUrl;
     private String biography;
+
+    @OneToMany(mappedBy = "director", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Director_Movie> movies;
 }

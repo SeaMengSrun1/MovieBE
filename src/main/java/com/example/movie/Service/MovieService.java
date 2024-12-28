@@ -62,15 +62,21 @@ public class MovieService {
         return movieRepository.findMovieByReverseOrder();
     }
 
+    //    sort movies by rating
+    public List<Movie> getMoviesByRating() {
+        return movieRepository.findMovieByRating();
+    }
+
     public List<Movie> getRandomMovies() {
         List<Movie> movies = movieRepository.findAll();
         Collections.shuffle(movies);
         return movies.stream().limit(3).collect(Collectors.toList());
     }
-// src/main/java/com/example/movie/Service/MovieService.java
-public List<Movie> getMoviesByType(String type) {
-    return movieRepository.findByMovieTypeName(type);
-}
+
+    // src/main/java/com/example/movie/Service/MovieService.java
+    public List<Movie> getMoviesByType(String type) {
+        return movieRepository.findByMovieTypeName(type);
+    }
 
 
 }

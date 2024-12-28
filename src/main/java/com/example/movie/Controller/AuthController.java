@@ -124,4 +124,11 @@ public class AuthController {
         tokenMap.put("role", role);
         return tokenMap;
     }
+
+    @GetMapping("user")
+    public ResponseDTO<User> getUser(@RequestHeader("Authorization") String token) {
+        String username = jwtUtil.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(username);
+        return new ResponseDTO<>("200", "Success", user);
+    }
 }

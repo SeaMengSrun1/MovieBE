@@ -1,23 +1,26 @@
 package com.example.movie.Model.JunctionTable;
 
+import com.example.movie.Model.Director;
 import com.example.movie.Model.Movie;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import com.example.movie.Model.Director;
 
 @Entity
+@Table(name = "director_movie")
 @Data
-public class DirectorMovie {
+public class Director_Movie {
+
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "director_id", nullable = false)
-    private Director director;
+    @JsonIgnore
+    private Director director;  // Changed from `actor` to `director`
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
-
 }

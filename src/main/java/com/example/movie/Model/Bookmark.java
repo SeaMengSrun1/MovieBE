@@ -1,9 +1,8 @@
+// src/main/java/com/example/movie/Model/Bookmark.java
 package com.example.movie.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -13,4 +12,14 @@ public class Bookmark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String date;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_id")
+    private Movie movie;
+
 }

@@ -34,6 +34,11 @@ public class MovieController {
         return new ResponseDTO<>("200", "Success", movieService.getLatestMovies());
     }
 
+    @GetMapping(path = "/top")
+    public ResponseDTO<List<Movie>> getTopMovies() {
+        return new ResponseDTO<>("200", "Success", movieService.getMoviesByRating());
+    }
+
     // src/main/java/com/example/movie/Controller/MovieController.java
     @GetMapping(path = "/random")
     public ResponseDTO<List<Movie>> getRandomMovies() {
@@ -43,6 +48,7 @@ public class MovieController {
     public ResponseDTO<List<Movie>> getMoviesByType(@PathVariable String type) {
         return new ResponseDTO<>("200", "Success", movieService.getMoviesByType(type));
     }
+
 
 
     @GetMapping(path = "/{id}")

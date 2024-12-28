@@ -1,7 +1,10 @@
+// src/main/java/com/example/movie/Model/User.java
 package com.example.movie.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -22,10 +25,14 @@ public class User {
     private Role role;
     private String profileUrl;
 
-
-
     public enum Role {
         ADMIN, USER
     }
+//   one to many with bookmark
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks;
 
+//    one to many with review
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 }

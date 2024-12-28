@@ -12,8 +12,9 @@ public class MovieDTO {
     private String posterUrl;
     private String rating;
     private String movieTypeName;
+    private String movieUrl;
 
-    public MovieDTO(Long id, String title, String description, String releaseDate, String posterUrl, String rating, String movieTypeName) {
+    public MovieDTO(Long id, String title, String description, String releaseDate, String posterUrl, String rating, String movieTypeName, String movieUrl) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -21,6 +22,7 @@ public class MovieDTO {
         this.posterUrl = posterUrl;
         this.rating = rating;
         this.movieTypeName = movieTypeName;
+        this.movieUrl = movieUrl;
     }
 
 }

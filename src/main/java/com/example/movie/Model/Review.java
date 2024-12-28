@@ -1,5 +1,6 @@
 package com.example.movie.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,8 +17,15 @@ public class Review {
     private String review_date;
     private Long movie_id;
     private Long user_id;
-//    @ManyToOne
-//    @JoinColumn(name = "movie_id", insertable = false, updatable = false)
-//    private Movie movie;
+    @ManyToOne
+    @JoinColumn(name = "movie_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Movie movie;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private User user;
+
 
 }
