@@ -24,6 +24,7 @@ public class Movie {
     private String rating;
     private String movieUrl;
     private String actorName;
+    
 
     @ManyToOne
     @JoinColumn(name = "movie_type_id")
